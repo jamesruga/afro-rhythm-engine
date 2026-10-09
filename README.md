@@ -7,9 +7,9 @@ An open-source, serverless audio signal processing (DSP) and MLOps engine built 
 ---
 ## 1. Project Overview & Domain Context
 ### The Challenge
-Standard Digital Audio Workstations (DAWs) and commercial audio feature extraction tools are designed primarily around Western 4/4 time signatures, quantized grid alignments, and equal-temperament tuning. When processing traditional African polyrhythms—such as **Benga syncopated guitar picking**, **Amapiano log drum pitch slides**, or **12/8 Isukuti triplet bell percussion**—standard onset trackers frequently misinterpret intentional micro-timing offsets as timing errors.
+Standard Digital Audio Workstations (DAWs) and commercial audio feature extraction tools are designed primarily around Western 4/4 time signatures, quantized grid alignments, and equal-temperament tuning. When processing traditional African polyrhythms, such as Benga syncopated guitar picking, Amapiano log drum pitch slides, or 12/8 Isukuti triplet bell percussion, standard onset trackers frequently misinterpret intentional micro-timing offsets as timing errors.
 ### The Engineering Solution
-`afro-rhythm-engine` is an open-source, serverless audio signal processing (DSP) and MLOps engine. It extracts short-time RMS energy envelopes, calculates Syncopation Index Scores across off-beat spectral concentrations, and utilizes an **Agentic Self-Correcting Optimization Loop** to dynamically calibrate onset detection parameters without human intervention.
+afro-rhythm-engine is an open-source, serverless audio signal processing (DSP) and MLOps engine. It extracts short-time RMS energy envelopes, calculates Syncopation Index Scores across off-beat spectral concentrations, and utilizes an Agentic Self-Correcting Optimization Loop to dynamically calibrate onset detection parameters without human intervention.
 ---
 ## 2. System Architecture & Agentic Feedback Loop
 ```
@@ -37,44 +37,43 @@ Standard Digital Audio Workstations (DAWs) and commercial audio feature extracti
 | (docs/agent_diagnostics.json)  | <---------------------------+
 +--------------------------------+
 ```
-1. **Synthetic Stem Generation (`src/stem_generator.py`):** Uses pure-Python signal synthesis (`wave`, `numpy`) to render PCM WAV audio stems simulating African rhythmic patterns.
-2. **DSP Feature Processor (`src/audio_processor.py`):** Evaluates short-time energy envelopes, calculates RMS dynamics, and computes syncopation indices based on off-beat peak density.
-3. **Agentic Optimizer (`src/agent.py`):** Evaluates signal-to-noise ratios (SNR) and detection confidence. If confidence drops below $85\%$, the agent autonomously iterates through sensitivity thresholds until convergence is achieved.
-4. **Automated MLOps Pipeline (`.github/workflows/engine.yml`):** Runs on a daily cron schedule (`00:00 EAT`), executing `pytest` validation suites, generating visual telemetry, and committing diagnostics with explicit author attribution (`jamesruga` / `jamesruga07@gmail.com`).
+1. Synthetic Stem Generation (`src/stem_generator.py`): Uses pure-Python signal synthesis (`wave`, `numpy`) to render PCM WAV audio stems simulating African rhythmic patterns.
+2. DSP Feature Processor (`src/audio_processor.py`): Evaluates short-time energy envelopes, calculates RMS dynamics, and computes syncopation indices based on off-beat peak density.
+3. Agentic Optimizer (`src/agent.py`): Evaluates signal-to-noise ratios (SNR) and detection confidence. If confidence drops below 85%, the agent autonomously iterates through sensitivity thresholds until convergence is achieved.
+4. Automated MLOps Pipeline (`.github/workflows/engine.yml`): Runs on a daily cron schedule (00:00 EAT), executing `pytest` validation suites, generating visual telemetry, and committing diagnostics with explicit author attribution.
 ---
 ## 3. Visual Analytics & Telemetry
-The automated MLOps pipeline dynamically generates visual diagnostic reports upon each pipeline run:
-
-| Rhythm Feature Profiles | Agentic Optimization Convergence |
-| :--- | :--- |
-| ![Rhythm Radar Chart](docs/rhythm_radar.png) | ![Agent Performance Chart](docs/agent_performance.png) |
-
-* **Rhythm Feature Profiles:** Compares normalized syncopation index scores against short-time RMS signal energy across Amapiano, Benga, and Isukuti audio stems.
-* **Agent Optimization Convergence:** Tracks confidence scores across iterative threshold parameter sweeps to ensure minimum target confidence ($\ge 85\%$) is met.
+The automated MLOps pipeline dynamically generates visual diagnostic reports upon each pipeline run.
+### Rhythm Feature Profiles
+![Rhythm Radar Chart](docs/rhythm_radar.png)
+Compares normalized syncopation index scores against short-time RMS signal energy across Amapiano, Benga, and Isukuti audio stems.
+### Agentic Optimization Convergence
+![Agent Performance Chart](docs/agent_performance.png)
+Tracks confidence scores across iterative threshold parameter sweeps to ensure minimum target confidence (>= 85%) is met.
 ---
 ## 4. Quick Start Guide
 ### Prerequisites
 * Python 3.10+
 * Git
 ### Local Setup & Execution
-1. **Clone the Repository:**
+1. Clone the Repository:
    ```bash
    git clone [https://github.com/jamesruga/afro-rhythm-engine.git](https://github.com/jamesruga/afro-rhythm-engine.git)
    cd afro-rhythm-engine
    ```
-2. **Generate Synthetic Audio Stems:**
+2. Generate Synthetic Audio Stems:
    ```bash
    PYTHONPATH=. python3 src/stem_generator.py
    ```
-3. **Run DSP Feature Extraction Engine:**
+3. Run DSP Feature Extraction Engine:
    ```bash
    PYTHONPATH=. python3 src/audio_processor.py
    ```
-4. **Execute Autonomous Agentic Optimizer:**
+4. Execute Autonomous Agentic Optimizer:
    ```bash
    PYTHONPATH=. python3 src/agent.py
    ```
-5. **Run Test Validation Suite:**
+5. Run Test Validation Suite:
    ```bash
    PYTHONPATH=. python3 -m pytest -v
    ```
