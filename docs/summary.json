@@ -1,0 +1,14 @@
+{
+    "Amapiano": {
+        "syncopation_index": 0.85,
+        "agent_confidence": 0.88
+    },
+    "Benga": {
+        "syncopation_index": 0.92,
+        "agent_confidence": 0.94
+    },
+    "Isukuti": {
+        "syncopation_index": 0.78,
+        "agent_confidence": 0.86
+    }
+}

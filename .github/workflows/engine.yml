@@ -1,0 +1,46 @@
+name: Afro Rhythm Engine CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 21 * * *' # Daily at 21:00 UTC / 00:00 EAT
+  workflow_dispatch:
+
+jobs:
+  run-agentic-pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy scipy librosa scikit-learn matplotlib pytest
+
+      - name: Run Pytest Validation Suite
+        run: |
+          PYTHONPATH=. pytest -v
+
+      - name: Generate Audio Stems & Run Agentic Optimizer
+        run: |
+          PYTHONPATH=. python src/stem_generator.py
+          PYTHONPATH=. python src/audio_processor.py
+          PYTHONPATH=. python src/agent.py
+          PYTHONPATH=. python src/visualize.py
+
+      - name: Commit and Push Telemetry Artifacts
+        run: |
+          git config --global user.name "jamesruga"
+          git config --global user.email "jamesruga07@gmail.com"
+          git add docs/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: update agentic diagnostic telemetry and rhythm charts [skip ci]" && git push)
