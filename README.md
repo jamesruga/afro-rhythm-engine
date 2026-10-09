@@ -6,8 +6,10 @@
 An open-source, serverless audio signal processing (DSP) and MLOps engine built for African polyrhythmic analysis, dynamic onset detection, and agentic parameter optimization.
 ---
 ## 1. Project Overview & Domain Context
-Standard Digital Audio Workstations (DAWs) and commercial audio feature extraction tools are designed primarily around Western 4/4 time signatures, quantized grid alignments, and equal-temperament tuning. When processing traditional African polyrhythms, such as Benga syncopated guitar picking, Amapiano log drum pitch slides, or 12/8 Isukuti triplet bell percussion, standard onset trackers frequently misinterpret intentional micro-timing offsets as timing errors.
-afro-rhythm-engine is an open-source, serverless audio signal processing (DSP) and MLOps engine. It extracts short-time RMS energy envelopes, calculates Syncopation Index Scores across off-beat spectral concentrations, and utilizes an Agentic Self-Correcting Optimization Loop to dynamically calibrate onset detection parameters without human intervention.
+### The Challenge
+Standard Digital Audio Workstations (DAWs) and commercial audio feature extraction tools are designed primarily around Western 4/4 time signatures, quantized grid alignments, and equal-temperament tuning. When processing traditional African polyrhythms, such as **Benga syncopated guitar picking**, **Amapiano log drum pitch slides**, or **12/8 Isukuti triplet bell percussion**, standard onset trackers frequently misinterpret intentional micro-timing offsets as timing errors.
+### The Engineering Solution
+`afro-rhythm-engine` is an open-source, serverless audio signal processing (DSP) and MLOps engine. It extracts short-time RMS energy envelopes, calculates Syncopation Index Scores across off-beat spectral concentrations, and utilizes an **Agentic Self-Correcting Optimization Loop** to dynamically calibrate onset detection parameters without human intervention.
 ---
 ## 2. System Architecture & Agentic Feedback Loop
 ```
@@ -42,10 +44,12 @@ afro-rhythm-engine is an open-source, serverless audio signal processing (DSP) a
 ---
 ## 3. Visual Analytics & Telemetry
 The automated MLOps pipeline dynamically generates visual diagnostic reports upon each pipeline run.
+### Rhythm Feature Profiles
 ![Rhythm Radar Chart](docs/rhythm_radar.png)
-Rhythm Feature Profiles: Compares normalized syncopation index scores against short-time RMS signal energy across Amapiano, Benga, and Isukuti audio stems.
+Compares normalized syncopation index scores against short-time RMS signal energy across Amapiano, Benga, and Isukuti audio stems.
+### Agentic Optimization Convergence
 ![Agent Performance Chart](docs/agent_performance.png)
-Agentic Optimization Convergence: Tracks confidence scores across iterative threshold parameter sweeps to ensure minimum target confidence (>= 85%) is met.
+Tracks confidence scores across iterative threshold parameter sweeps to ensure minimum target confidence ($\ge 85\%$) is met.
 ---
 ## 4. Quick Start Guide
 ### Prerequisites
