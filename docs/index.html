@@ -14,6 +14,7 @@
             --accent-green: #2ea043;
             --accent-purple: #8a2be2;
             --accent-cyan: #58a6ff;
+            --accent-orange: #f0883e;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -41,6 +42,25 @@
         .subtitle {
             color: var(--text-muted);
             font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+        .repo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #21262d;
+            color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .repo-link:hover {
+            background-color: #30363d;
+            border-color: #8b949e;
         }
         .hud-bar {
             display: grid;
@@ -104,10 +124,50 @@
             margin-bottom: 15px;
             line-height: 1.4;
         }
-        audio {
-            width: 100%;
-            outline: none;
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #0d1117;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+        .play-btn {
+            background-color: var(--accent-green);
+            color: #ffffff;
+            border: none;
+            padding: 8px 18px;
             border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .play-btn:active {
+            opacity: 0.8;
+        }
+        .progress-bar {
+            flex-grow: 1;
+            height: 6px;
+            background: #30363d;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--accent-cyan);
+            transition: width 0.1s linear;
+        }
+        .time-display {
+            font-size: 0.8rem;
+            font-family: monospace;
+            color: var(--text-muted);
+            min-width: 45px;
         }
         .telemetry-img {
             width: 100%;
@@ -135,6 +195,10 @@
         <header>
             <h1>🥁 AfroRhythm Engine</h1>
             <div class="subtitle">African Audio Signal Processing (DSP) & Agentic MLOps Showcase</div>
+            <a href="https://github.com/jamesruga/afro-rhythm-engine" target="_blank" class="repo-link">
+                <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                View GitHub Repository
+            </a>
         </header>
 
         <div class="hud-bar">
@@ -158,6 +222,7 @@
 
         <h2 class="section-title">🎧 Interactive Audio Stem Previews</h2>
 
+        <!-- Benga Card -->
         <div class="audio-card">
             <h3>Benga Syncopated Guitar Stem</h3>
             <div>
@@ -167,9 +232,16 @@
             <div class="description">
                 Fast-paced off-beat picking pattern simulating traditional Luo Benga guitar syncopation. Demonstrates high spectral density and rapid energy onset variations.
             </div>
-            <audio controls src="stems/benga_stem.wav"></audio>
+            <div class="player-controls">
+                <button class="play-btn" onclick="togglePlay('benga', 'stems/benga_stem.wav')">
+                    <span id="btn-icon-benga">▶</span> Play Stem
+                </button>
+                <div class="progress-bar"><div id="progress-benga" class="progress-fill"></div></div>
+                <div id="time-benga" class="time-display">0:00</div>
+            </div>
         </div>
 
+        <!-- Amapiano Card -->
         <div class="audio-card">
             <h3>Amapiano Log Drum Stem</h3>
             <div>
@@ -179,9 +251,16 @@
             <div class="description">
                 Sub-bass log drum pitch slide emulation. Features low-frequency energy envelopes and micro-timing offsets targeted by the agentic threshold optimizer.
             </div>
-            <audio controls src="stems/amapiano_stem.wav"></audio>
+            <div class="player-controls">
+                <button class="play-btn" onclick="togglePlay('amapiano', 'stems/amapiano_stem.wav')">
+                    <span id="btn-icon-amapiano">▶</span> Play Stem
+                </button>
+                <div class="progress-bar"><div id="progress-amapiano" class="progress-fill"></div></div>
+                <div id="time-amapiano" class="time-display">0:00</div>
+            </div>
         </div>
 
+        <!-- Isukuti Card -->
         <div class="audio-card">
             <h3>12/8 Isukuti Polyrhythm Stem</h3>
             <div>
@@ -191,7 +270,13 @@
             <div class="description">
                 Traditional Luhya Isukuti triplet bell and drum interlocking percussion in 12/8 time signature. Tests off-beat peak identification across non-quantized grids.
             </div>
-            <audio controls src="stems/isukuti_stem.wav"></audio>
+            <div class="player-controls">
+                <button class="play-btn" onclick="togglePlay('isukuti', 'stems/isukuti_stem.wav')">
+                    <span id="btn-icon-isukuti">▶</span> Play Stem
+                </button>
+                <div class="progress-bar"><div id="progress-isukuti" class="progress-fill"></div></div>
+                <div id="time-isukuti" class="time-display">0:00</div>
+            </div>
         </div>
 
         <h2 class="section-title">📊 Live DSP Telemetry</h2>
@@ -213,8 +298,119 @@
         </div>
 
         <footer>
-            AfroRhythm Engine | Developed by <a href="https://github.com/jamesruga" target="_blank">James Ruga</a> | Powered by GitHub Actions & Pages
+            AfroRhythm Engine | Developed by <a href="https://github.com/jamesruga" target="_blank">James Ruga</a> | <a href="https://github.com/jamesruga/afro-rhythm-engine" target="_blank">Repository Source Code</a>
         </footer>
     </div>
+
+    <script>
+        let currentAudio = null;
+        let currentId = null;
+        let timer = null;
+        let synthInterval = null;
+
+        function togglePlay(id, fileUrl) {
+            if (currentId === id) {
+                stopAll();
+                return;
+            }
+
+            stopAll();
+            currentId = id;
+            document.getElementById(`btn-icon-${id}`).innerText = "⏹";
+
+            const audio = new Audio(fileUrl);
+            currentAudio = audio;
+
+            audio.play().then(() => {
+                timer = setInterval(() => {
+                    if (!audio.duration) return;
+                    let pct = (audio.currentTime / audio.duration) * 100;
+                    document.getElementById(`progress-${id}`).style.width = pct + "%";
+                    let sec = Math.floor(audio.currentTime);
+                    document.getElementById(`time-${id}`).innerText = `0:${sec < 10 ? '0' : ''}${sec}`;
+                }, 100);
+
+                audio.onended = () => stopAll();
+            }).catch(err => {
+                console.log("WAV stream fallback to Web Audio Synth", err);
+                playSynthPolyrhythm(id);
+            });
+        }
+
+        function stopAll() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            if (timer) clearInterval(timer);
+            if (synthInterval) clearInterval(synthInterval);
+
+            ['benga', 'amapiano', 'isukuti'].forEach(id => {
+                const icon = document.getElementById(`btn-icon-${id}`);
+                const prog = document.getElementById(`progress-${id}`);
+                const time = document.getElementById(`time-${id}`);
+                if (icon) icon.innerText = "▶";
+                if (prog) prog.style.width = "0%";
+                if (time) time.innerText = "0:00";
+            });
+            currentId = null;
+        }
+
+        function playSynthPolyrhythm(type) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            let step = 0;
+            let totalSteps = 40;
+
+            synthInterval = setInterval(() => {
+                if (step >= totalSteps) {
+                    stopAll();
+                    return;
+                }
+
+                let pct = (step / totalSteps) * 100;
+                document.getElementById(`progress-${type}`).style.width = pct + "%";
+                let sec = Math.floor((step * 0.15));
+                document.getElementById(`time-${type}`).innerText = `0:${sec < 10 ? '0' : ''}${sec}`;
+
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'benga') {
+                    // Benga fast syncopated high picking
+                    let freqs = [523.25, 659.25, 783.99, 1046.50];
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freqs[step % 4], ctx.currentTime);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.1);
+                } else if (type === 'amapiano') {
+                    // Amapiano Log Drum pitch drop
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(160, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(45, ctx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.6, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.25);
+                } else {
+                    // Isukuti 12/8 triplet bell/drum
+                    osc.type = 'sine';
+                    let isBell = (step % 3 === 0);
+                    osc.frequency.setValueAtTime(isBell ? 880 : 180, ctx.currentTime);
+                    gain.gain.setValueAtTime(isBell ? 0.4 : 0.5, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.12);
+                }
+
+                step++;
+            }, 150);
+        }
+    </script>
 </body>
 </html>
