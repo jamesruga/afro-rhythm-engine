@@ -2,8 +2,10 @@
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jamesruga/afro-rhythm-engine/engine.yml?branch=main&label=CI%2FCD%20Pipeline&style=flat-square)
 ![Python Version](https://img.shields.io/badge/python-3.10-3776AB?style=flat-square&logo=python&logoColor=white)
 ![Domain](https://img.shields.io/badge/domain-Audio%20DSP%20%26%20MLOps-8A2BE2?style=flat-square)
+![Live Audio Showcase](https://img.shields.io/badge/Live%20Audio-Showcase%20%26%20HUD-2ea043?style=flat-square&logo=githubpages&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 An open-source, serverless audio signal processing (DSP) and MLOps engine built for African polyrhythmic analysis, dynamic onset detection, and agentic parameter optimization.
+🎧 **[Listen to Live Audio Stems & Interactive HUD](https://jamesruga.github.io/afro-rhythm-engine/)**
 ***
 ## 1. Project Overview & Domain Context
 ### The Challenge
