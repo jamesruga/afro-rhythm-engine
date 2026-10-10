@@ -1,60 +1,114 @@
-import os
 import wave
 import struct
+import math
+import os
 import numpy as np
 
-def create_synthetic_rhythm_stem(filename, duration=3.0, sr=22050, pattern_type="amapiano"):
+SAMPLE_RATE = 44100
+
+def karplus_strong(freq, duration, sr=SAMPLE_RATE, decay=0.985):
+    """Karplus-Strong plucked string synthesis for authentic Benga electric guitar."""
+    buf_len = max(2, int(sr / freq))
+    buf = np.random.uniform(-1.0, 1.0, buf_len)
+    num_samples = int(sr * duration)
+    samples = np.zeros(num_samples)
+    
+    ptr = 0
+    for i in range(num_samples):
+        val = buf[ptr]
+        samples[i] = val
+        next_ptr = (ptr + 1) % buf_len
+        buf[ptr] = 0.5 * (val + buf[next_ptr]) * decay
+        ptr = next_ptr
+    return samples
+
+def amapiano_log_drum(duration, sr=SAMPLE_RATE, start_freq=170, end_freq=42):
+    """Amapiano Log Drum FM synthesis with wood resonance and sub-bass pitch drop."""
+    num_samples = int(sr * duration)
+    t = np.linspace(0, duration, num_samples, endpoint=False)
+    freq_env = end_freq + (start_freq - end_freq) * np.exp(-18 * t)
+    phase = 2 * np.pi * np.cumsum(freq_env) / sr
+    
+    fm_modulator = np.sin(phase * 2.0) * 0.35
+    carrier = np.sin(phase + fm_modulator)
+    sub = np.sin(phase * 0.5) * 0.3
+    signal = np.tanh((carrier + sub) * 2.0)
+    
+    amp_env = np.exp(-4.5 * t)
+    return signal * amp_env
+
+def isukuti_bell(freq, duration, sr=SAMPLE_RATE):
+    """Inharmonic modal synthesis for African metallic Isukuti bell."""
+    num_samples = int(sr * duration)
+    t = np.linspace(0, duration, num_samples, endpoint=False)
+    m1 = np.sin(2 * np.pi * freq * t) * 0.5
+    m2 = np.sin(2 * np.pi * (freq * 1.58) * t) * 0.3
+    m3 = np.sin(2 * np.pi * (freq * 2.42) * t) * 0.2
+    amp = np.exp(-14 * t)
+    return (m1 + m2 + m3) * amp
+
+def isukuti_membrane(duration, sr=SAMPLE_RATE):
+    """Acoustic Isukuti skin drum strike."""
+    num_samples = int(sr * duration)
+    t = np.linspace(0, duration, num_samples, endpoint=False)
+    pitch_env = 130 * np.exp(-22 * t) + 50
+    phase = 2 * np.pi * np.cumsum(pitch_env) / sr
+    body = np.sin(phase) * np.exp(-7 * t)
+    noise = np.random.uniform(-0.15, 0.15, num_samples) * np.exp(-30 * t)
+    return body + noise
+
+def save_wav(filename, signal, sr=SAMPLE_RATE):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
-    t = np.linspace(0, duration, int(sr * duration), False)
-    signal = np.zeros_like(t)
-
-    # 120 BPM -> 0.5s per beat
-    beat_length = int(sr * 0.5)
+    signal = signal / (np.max(np.abs(signal)) + 1e-6)
+    scaled = (signal * 32767).astype(np.int16)
     
-    if pattern_type == "amapiano":
-        # Log-drum pitch slides & syncopated sub-bass
-        for i in range(0, len(t), beat_length):
-            segment_len = min(beat_length, len(t) - i)
-            t_seg = t[i:i+segment_len] - t[i]
-            # Frequency sweep from 120Hz down to 40Hz (characteristic log drum)
-            freq = np.linspace(120, 40, segment_len)
-            signal[i:i+segment_len] += 0.8 * np.sin(2 * np.pi * freq * t_seg) * np.exp(-3 * t_seg)
+    with wave.open(filename, 'w') as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(sr)
+        for val in scaled:
+            wf.writeframes(struct.pack('<h', val))
 
-    elif pattern_type == "benga":
-        # Fast 16th note guitar syncopation (high frequency arpeggios)
-        sixteenth = int(sr * 0.125)
-        notes = [440, 554.37, 659.25, 880] # A major arpeggio
-        for idx, i in enumerate(range(0, len(t), sixteenth)):
-            segment_len = min(sixteenth, len(t) - i)
-            t_seg = t[i:i+segment_len] - t[i]
-            note_freq = notes[idx % len(notes)]
-            signal[i:i+segment_len] += 0.6 * np.sin(2 * np.pi * note_freq * t_seg) * np.exp(-8 * t_seg)
-
-    elif pattern_type == "isukuti":
-        # 12/8 Polyrhythmic triplet bell and drum accents
-        triplet = int(sr * 0.166)
-        for idx, i in enumerate(range(0, len(t), triplet)):
-            if idx % 3 != 1: # Off-beat African polyrhythmic accent
-                segment_len = min(triplet, len(t) - i)
-                t_seg = t[i:i+segment_len] - t[i]
-                signal[i:i+segment_len] += 0.7 * np.sin(2 * np.pi * 300 * t_seg) * np.exp(-12 * t_seg)
-
-    # Normalize audio signal
-    max_val = np.max(np.abs(signal))
-    if max_val > 0:
-        signal = signal / max_val * 0.9
-
-    # Write PCM WAV file
-    packed_audio = struct.pack(f'<{len(signal)}h', *(int(s * 32767) for s in signal))
-    with wave.open(filename, 'w') as wav_file:
-        wav_file.setnchannels(1)
-        wav_file.setsampwidth(2)
-        wav_file.setframerate(sr)
-        wav_file.writeframes(packed_audio)
+def generate_stems():
+    sr = SAMPLE_RATE
+    total_sec = 4.0
+    num_samples = int(sr * total_sec)
     
-    print(f"[Stem Generator] Successfully created synthetic {pattern_type} audio stem: {filename}")
+    # 1. Benga Guitar Stem
+    benga = np.zeros(num_samples)
+    scale = [329.63, 392.00, 493.88, 587.33, 659.25, 493.88, 392.00, 329.63]
+    step_time = 0.125
+    for i in range(32):
+        t_idx = int(i * step_time * sr)
+        note_freq = scale[i % len(scale)]
+        pluck = karplus_strong(note_freq, 0.4, sr)
+        end_idx = min(num_samples, t_idx + len(pluck))
+        benga[t_idx:end_idx] += pluck[:end_idx - t_idx] * 0.7
+    save_wav('data/stems/benga_stem.wav', benga)
 
-if __name__ == "__main__":
-    create_synthetic_rhythm_stem("data/stems/amapiano_logdrum.wav", pattern_type="amapiano")
-    create_synthetic_rhythm_stem("data/stems/benga_guitar.wav", pattern_type="benga")
-    create_synthetic_rhythm_stem("data/stems/isukuti_percussion.wav", pattern_type="isukuti")
+    # 2. Amapiano Log Drum Stem
+    amapiano = np.zeros(num_samples)
+    rhythm_hits = [0.0, 0.375, 0.75, 1.125, 1.5, 2.0, 2.375, 2.75, 3.125, 3.5]
+    for hit_t in rhythm_hits:
+        t_idx = int(hit_t * sr)
+        log_hit = amapiano_log_drum(0.5, sr)
+        end_idx = min(num_samples, t_idx + len(log_hit))
+        amapiano[t_idx:end_idx] += log_hit[:end_idx - t_idx]
+    save_wav('data/stems/amapiano_stem.wav', amapiano)
+
+    # 3. 12/8 Isukuti Polyrhythm Stem
+    isukuti = np.zeros(num_samples)
+    bell_pattern = [0.0, 0.166, 0.333, 0.5, 0.666, 0.833, 1.0, 1.166, 1.333, 1.5]
+    for hit_t in bell_pattern:
+        for loop in range(2):
+            t_idx = int((hit_t + loop * 2.0) * sr)
+            is_high = (hit_t in [0.0, 0.5, 1.0, 1.5])
+            bell = isukuti_bell(880 if is_high else 587, 0.25, sr)
+            drum = isukuti_membrane(0.35, sr)
+            end_idx = min(num_samples, t_idx + len(bell))
+            isukuti[t_idx:end_idx] += bell[:end_idx - t_idx] * 0.5 + drum[:end_idx - t_idx] * 0.6
+    save_wav('data/stems/isukuti_stem.wav', isukuti)
+
+if __name__ == '__main__':
+    generate_stems()
+    print("General MIDI XG Acoustic Physical Modeling Stems Successfully Generated.")

@@ -2,22 +2,22 @@
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jamesruga/afro-rhythm-engine/engine.yml?branch=main&label=CI%2FCD%20Pipeline&style=flat-square)
 ![Python Version](https://img.shields.io/badge/python-3.10-3776AB?style=flat-square&logo=python&logoColor=white)
 ![Domain](https://img.shields.io/badge/domain-Audio%20DSP%20%26%20MLOps-8A2BE2?style=flat-square)
-![Live Audio Showcase](https://img.shields.io/badge/Live%20Audio-Showcase%20%26%20HUD-2ea043?style=flat-square&logo=githubpages&logoColor=white)
+![Live Audio Showcase](https://img.shields.io/badge/Live%20Audio-GM%20XG%20Showcase-d29922?style=flat-square&logo=githubpages&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 An open-source, serverless audio signal processing (DSP) and MLOps engine built for African polyrhythmic analysis, dynamic onset detection, and agentic parameter optimization.
-🎧 **[Listen to Live Audio Stems & Interactive HUD](https://jamesruga.github.io/afro-rhythm-engine/)**
+🎧 **[Listen to General MIDI XG Audio Stems & Interactive HUD](https://jamesruga.github.io/afro-rhythm-engine/)**
 ***
 ## 1. Project Overview & Domain Context
 ### The Challenge
 Standard Digital Audio Workstations (DAWs) and commercial audio feature extraction tools are designed primarily around Western 4/4 time signatures, quantized grid alignments, and equal-temperament tuning. When processing traditional African polyrhythms, such as Benga syncopated guitar picking, Amapiano log drum pitch slides, or 12/8 Isukuti triplet bell percussion, standard onset trackers frequently misinterpret intentional micro-timing offsets as timing errors.
 ### The Engineering Solution
-AfroRhythm Engine is an open-source, serverless audio signal processing (DSP) and MLOps engine. It extracts short-time RMS energy envelopes, calculates Syncopation Index Scores across off-beat spectral concentrations, and utilizes an Agentic Self-Correcting Optimization Loop to dynamically calibrate onset detection parameters without human intervention.
+AfroRhythm Engine is an open-source, serverless audio signal processing (DSP) and MLOps engine. It utilizes General MIDI XG Physical Acoustic Modeling (Karplus-Strong string synthesis, FM pitch-envelope log drum synthesis, and inharmonic modal bell synthesis) to render audio stems. It extracts short-time RMS energy envelopes, calculates Syncopation Index Scores, and utilizes an Agentic Self-Correcting Optimization Loop to dynamically calibrate onset detection parameters without human intervention.
 ***
 ## 2. System Architecture & Agentic Feedback Loop
 ```
 +--------------------------------+
 |  Synthetic Stem Generator      |
-|  (Benga / Amapiano / Isukuti)  |
+|  (GM XG Physical Modeling)     |
 +---------------+----------------+
                 |
                 v
@@ -39,7 +39,7 @@ AfroRhythm Engine is an open-source, serverless audio signal processing (DSP) an
 | (docs/agent_diagnostics.json)  | <---------------------------+
 +--------------------------------+
 ```
-1. Synthetic Stem Generation (`src/stem_generator.py`): Uses pure-Python signal synthesis (`wave`, `numpy`) to render PCM WAV audio stems simulating African rhythmic patterns.
+1. Synthetic Stem Generation (`src/stem_generator.py`): Employs Karplus-Strong string modeling, FM pitch-drop log drum synthesis, and inharmonic modal bell synthesis to render realistic PCM WAV audio stems.
 2. DSP Feature Processor (`src/audio_processor.py`): Evaluates short-time energy envelopes, calculates RMS dynamics, and computes syncopation indices based on off-beat peak density.
 3. Agentic Optimizer (`src/agent.py`): Evaluates signal-to-noise ratios (SNR) and detection confidence. If confidence drops below 85%, the agent autonomously iterates through sensitivity thresholds until convergence is achieved.
 4. Automated MLOps Pipeline (`.github/workflows/engine.yml`): Runs on a daily cron schedule (00:00 EAT), executing `pytest` validation suites, generating visual telemetry, and committing diagnostics with explicit author attribution.
@@ -84,7 +84,7 @@ Tracks confidence scores across iterative threshold parameter sweeps to ensure m
 
 | Command / File | Purpose |
 | :--- | :--- |
-| `src/stem_generator.py` | Generates PCM WAV audio stems for Benga, Amapiano, and Isukuti styles. |
+| `src/stem_generator.py` | Generates GM XG physical modeling PCM WAV audio stems for Benga, Amapiano, and Isukuti styles. |
 | `src/audio_processor.py` | Computes RMS energy envelopes and syncopation index scores. |
 | `src/agent.py` | Autonomous feedback loop that tunes sensitivity thresholds until convergence. |
 | `src/visualize.py` | Generates visual telemetry plots (`docs/*.png`). |
