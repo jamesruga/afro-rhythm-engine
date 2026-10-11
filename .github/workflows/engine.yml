@@ -29,11 +29,11 @@ jobs:
 
       - name: Run Pytest Suite
         run: |
-          python -m pytest -v
+          PYTHONPATH=. python -m pytest -v
 
       - name: Run AfroRhythm Engine
         run: |
-          python src/main.py
+          PYTHONPATH=. python src/main.py
 
       - name: Commit and Push Visual & Web Audio Assets
         run: |
