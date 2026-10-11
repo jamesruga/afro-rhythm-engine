@@ -42,7 +42,7 @@ AfroRhythm Engine is an open-source, serverless audio signal processing (DSP) an
 1. Synthetic Stem Generation (`src/stem_generator.py`): Employs Karplus-Strong string modeling, FM pitch-drop log drum synthesis, and inharmonic modal bell synthesis to render realistic PCM WAV audio stems.
 2. DSP Feature Processor (`src/audio_processor.py`): Evaluates short-time energy envelopes, calculates RMS dynamics, and computes syncopation indices based on off-beat peak density.
 3. Agentic Optimizer (`src/agent.py`): Evaluates signal-to-noise ratios (SNR) and detection confidence. If confidence drops below 85%, the agent autonomously iterates through sensitivity thresholds until convergence is achieved.
-4. Automated MLOps Pipeline (`.github/workflows/engine.yml`): Runs on a daily cron schedule (00:00 EAT), executing `pytest` validation suites, generating visual telemetry, and committing diagnostics with explicit author attribution.
+4. Automated MLOps Pipeline (`.github/workflows/engine.yml`): Runs on a daily cron schedule (00:00 EAT), executing `PYTHONPATH=. python -m pytest -v` validation suites, generating visual telemetry, and committing diagnostics with explicit author attribution.
 ***
 ## 3. Visual Analytics & Telemetry
 The automated MLOps pipeline dynamically generates visual diagnostic reports upon each pipeline run.
@@ -77,7 +77,7 @@ Tracks confidence scores across iterative threshold parameter sweeps to ensure m
    ```
 5. Run Test Validation Suite:
    ```bash
-   PYTHONPATH=. python3 -m pytest -v
+   PYTHONPATH=. python3 -m PYTHONPATH=. python -m pytest -v
    ```
 ***
 ## 5. Technical CLI & Module Reference
