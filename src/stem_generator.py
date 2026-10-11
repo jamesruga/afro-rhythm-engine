@@ -6,7 +6,7 @@ import numpy as np
 
 SAMPLE_RATE = 44100
 
-def karplus_strong(freq, duration, sr=SAMPLE_RATE, decay=0.985):
+def karplus_strong(freq, duration, sr=22050, decay=0.985):
     """Karplus-Strong plucked string synthesis for authentic Benga electric guitar."""
     buf_len = max(2, int(sr / freq))
     buf = np.random.uniform(-1.0, 1.0, buf_len)
@@ -22,7 +22,7 @@ def karplus_strong(freq, duration, sr=SAMPLE_RATE, decay=0.985):
         ptr = next_ptr
     return samples
 
-def amapiano_log_drum(duration, sr=SAMPLE_RATE, start_freq=170, end_freq=42):
+def amapiano_log_drum(duration, sr=22050, start_freq=170, end_freq=42):
     """Amapiano Log Drum FM synthesis with wood resonance and sub-bass pitch drop."""
     num_samples = int(sr * duration)
     t = np.linspace(0, duration, num_samples, endpoint=False)
@@ -37,7 +37,7 @@ def amapiano_log_drum(duration, sr=SAMPLE_RATE, start_freq=170, end_freq=42):
     amp_env = np.exp(-4.5 * t)
     return signal * amp_env
 
-def isukuti_bell(freq, duration, sr=SAMPLE_RATE):
+def isukuti_bell(freq, duration, sr=22050):
     """Inharmonic modal synthesis for African metallic Isukuti bell."""
     num_samples = int(sr * duration)
     t = np.linspace(0, duration, num_samples, endpoint=False)
@@ -47,7 +47,7 @@ def isukuti_bell(freq, duration, sr=SAMPLE_RATE):
     amp = np.exp(-14 * t)
     return (m1 + m2 + m3) * amp
 
-def isukuti_membrane(duration, sr=SAMPLE_RATE):
+def isukuti_membrane(duration, sr=22050):
     """Acoustic Isukuti skin drum strike."""
     num_samples = int(sr * duration)
     t = np.linspace(0, duration, num_samples, endpoint=False)
@@ -57,7 +57,7 @@ def isukuti_membrane(duration, sr=SAMPLE_RATE):
     noise = np.random.uniform(-0.15, 0.15, num_samples) * np.exp(-30 * t)
     return body + noise
 
-def save_wav(filename, signal, sr=SAMPLE_RATE):
+def save_wav(filename, signal, sr=22050):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     signal = signal / (np.max(np.abs(signal)) + 1e-6)
     scaled = (signal * 32767).astype(np.int16)
@@ -112,3 +112,13 @@ def generate_stems():
 if __name__ == '__main__':
     generate_stems()
     print("General MIDI XG Acoustic Physical Modeling Stems Successfully Generated.")
+
+def create_synthetic_rhythm_stem(filename, duration=1.0, pattern_type="amapiano", sr=22050):
+    if pattern_type == "amapiano":
+        signal = amapiano_log_drum(duration, sr=sr)
+    elif pattern_type == "isukuti":
+        signal = isukuti_membrane(duration, sr=sr)
+    else:
+        signal = karplus_strong(220, duration, sr=sr)
+    save_wav(filename, signal, sr=sr)
+    return filename
